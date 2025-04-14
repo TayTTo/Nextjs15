@@ -1,6 +1,8 @@
 import Image from "next/image"
 import Link from "next/link"
 import React from "react"
+
+import MobileNavigation from "./MobileNavigation"
 import Theme from "./Theme"
 
 const Navbar = () => {
@@ -19,6 +21,7 @@ const Navbar = () => {
       </Link>
       <p>Global search</p>
       <div className="flex items-center"><Theme /></div>
+      <MobileNavigation />
     </nav>
   )
 }
