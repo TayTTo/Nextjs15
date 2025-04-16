@@ -15,8 +15,8 @@ const LocalSearch = ({ route, placeholder, otherClasses }: searchProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const query = searchParams.get("query") || "";
-  const [searchQuery, setSearchQuery] = useState(query);
+  const queryParam = searchParams.get("query") || "";
+  const [searchQuery, setSearchQuery] = useState(queryParam);
   useEffect(() => {
     const debounceFn = setTimeout(() => {
       if (searchQuery) {

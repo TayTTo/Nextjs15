@@ -6,9 +6,6 @@ export const formUrlQuery = (
 	const params = new URLSearchParams(searchParams);
 	params.set(key, value);
 	const newPathName = `${window.location.pathname}?${params}`;
-  console.log("DuyAnh testing")
-	console.log(params.toString());
-	console.log(window.location.pathname.toString());
 	return newPathName;
 };
 

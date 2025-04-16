@@ -1,3 +1,4 @@
+import HomeFilter from "@/components/filter/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constansts/routes";
@@ -36,15 +37,15 @@ const questions = [
 		tags: [
 			{
 				_id: "3",
-				name: "Node.js",
+				name: "C++",
 			},
 			{
 				_id: "4",
-				name: "Error Handling",
+				name: "C",
 			},
 			{
 				_id: "5",
-				name: "Best Practices",
+				name: "Node",
 			},
 		],
 		author: {
@@ -62,14 +63,16 @@ interface SearchParams {
 	searchParams: Promise<{ [key: string]: string }>;
 }
 const Home = async ({ searchParams }: SearchParams) => {
-	const { query = "" } = await searchParams;
+	const { query = "", filter = "" } = await searchParams;
 	const filteredQuestions = questions.filter((question) => {
-		return question.title.toLowerCase().includes(query?.toLowerCase());
+		const matchedQuery = question.title.toLowerCase().includes(query.toLowerCase());
+    const matchedFilter = question.tags[0].name.toLowerCase().includes(filter.toLowerCase())
+    return matchedQuery && matchedFilter
 	});
   console.log(filteredQuestions)
 	return (
 		<>
-			<section className="flex flex-col-reverse  sm:flex-row justify-between w-full sm:items-center">
+			<section className="flex flex-col-reverse sm:flex-row justify-between w-full sm:items-center">
 				<h1 className="h1-bold text-dark100_light900">All questions</h1>
 				<Button
 					className="primary-gradient min-h-[46px] px-4 py-3 text-light-900"
@@ -84,6 +87,7 @@ const Home = async ({ searchParams }: SearchParams) => {
 					placeholder="Search questions..."
 					otherClasses="flex-1"
 				/>
+        <HomeFilter />
 			</section>
 			<div className="mt-10 flex flex-col">
 				{filteredQuestions.map((question) => {
