@@ -4,7 +4,69 @@ import ROUTES from "@/constansts/routes";
 import Link from "next/link";
 import React from "react";
 
-const Home = () => {
+const questions = [
+	{
+		_id: "1",
+		title: "How to learn React?",
+		description: "I want to learn React, can anyone help me?",
+		tags: [
+			{
+				_id: "1",
+				name: "React",
+			},
+			{
+				_id: "2",
+				name: "Javascript",
+			},
+		],
+		author: {
+			_id: "1",
+			name: "Duy Anh",
+		},
+		upvotes: 10,
+		answer: 5,
+		views: 1000,
+		createdAt: new Date(),
+	},
+	{
+		_id: "2",
+		title: "Best practices for Node.js error handling?",
+		description:
+			"What are some recommended ways to handle errors effectively in a Node.js application?",
+		tags: [
+			{
+				_id: "3",
+				name: "Node.js",
+			},
+			{
+				_id: "4",
+				name: "Error Handling",
+			},
+			{
+				_id: "5",
+				name: "Best Practices",
+			},
+		],
+		author: {
+			_id: "2",
+			name: "Linh Chi",
+		},
+		upvotes: 10,
+		answer: 5,
+		views: 1000,
+		createdAt: new Date(),
+	},
+];
+
+interface SearchParams {
+	searchParams: Promise<{ [key: string]: string }>;
+}
+const Home = async ({ searchParams }: SearchParams) => {
+	const { query = "" } = await searchParams;
+	const filteredQuestions = questions.filter((question) => {
+		return question.title.toLowerCase().includes(query?.toLowerCase());
+	});
+  console.log(filteredQuestions)
 	return (
 		<>
 			<section className="flex flex-col-reverse  sm:flex-row justify-between w-full sm:items-center">
@@ -13,22 +75,22 @@ const Home = () => {
 					className="primary-gradient min-h-[46px] px-4 py-3 text-light-900"
 					asChild
 				>
-					<Link href={ROUTES.QUESTION} >Ask a question</Link>
+					<Link href={ROUTES.QUESTION}>Ask a question</Link>
 				</Button>
 			</section>
-      <section className="mt-11">
-        <LocalSearch 
-          route="/"
-          placeholder="Search questions..."
-          otherClasses="flex-1"
-        />
-      </section>
-      <div>
-        <p>Question Card 1</p>
-        <p>Question Card 2</p>
-        <p>Question Card 3</p>
-        <p>Question Card 4</p>
-      </div>
+			<section className="mt-11">
+				<LocalSearch
+					route="/"
+					placeholder="Search questions..."
+					otherClasses="flex-1"
+				/>
+			</section>
+			<div className="mt-10 flex flex-col">
+				{filteredQuestions.map((question) => {
+					console.log(question.title);
+					return <h1 key={question._id}>{question.title}</h1>;
+				})}
+			</div>
 		</>
 	);
 };
