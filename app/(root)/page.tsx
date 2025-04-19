@@ -1,3 +1,4 @@
+import QuestionCard from "@/components/cards/QuestionCard";
 import HomeFilter from "@/components/filter/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,7 @@ const questions = [
 		author: {
 			_id: "1",
 			name: "Duy Anh",
+      image:"https://img.freepik.com/premium-vector/avatar-icon0002_750950-43.jpg"
 		},
 		upvotes: 10,
 		answer: 5,
@@ -51,6 +53,7 @@ const questions = [
 		author: {
 			_id: "2",
 			name: "Linh Chi",
+      image:"https://img.freepik.com/premium-vector/avatar-icon0002_750950-43.jpg"
 		},
 		upvotes: 10,
 		answer: 5,
@@ -65,11 +68,15 @@ interface SearchParams {
 const Home = async ({ searchParams }: SearchParams) => {
 	const { query = "", filter = "" } = await searchParams;
 	const filteredQuestions = questions.filter((question) => {
-		const matchedQuery = question.title.toLowerCase().includes(query.toLowerCase());
-    const matchedFilter = question.tags[0].name.toLowerCase().includes(filter.toLowerCase())
-    return matchedQuery && matchedFilter
+		const matchedQuery = question.title
+			.toLowerCase()
+			.includes(query.toLowerCase());
+		const matchedFilter = question.tags[0].name
+			.toLowerCase()
+			.includes(filter.toLowerCase());
+		return matchedQuery && matchedFilter;
 	});
-  console.log(filteredQuestions)
+	console.log(filteredQuestions);
 	return (
 		<>
 			<section className="flex flex-col-reverse sm:flex-row justify-between w-full sm:items-center">
@@ -78,7 +85,7 @@ const Home = async ({ searchParams }: SearchParams) => {
 					className="primary-gradient min-h-[46px] px-4 py-3 text-light-900"
 					asChild
 				>
-					<Link href={ROUTES.QUESTION}>Ask a question</Link>
+					<Link href={ROUTES.ASK_QUESTION}>Ask a question</Link>
 				</Button>
 			</section>
 			<section className="mt-11">
@@ -87,12 +94,11 @@ const Home = async ({ searchParams }: SearchParams) => {
 					placeholder="Search questions..."
 					otherClasses="flex-1"
 				/>
-        <HomeFilter />
+				<HomeFilter />
 			</section>
 			<div className="mt-10 flex flex-col">
 				{filteredQuestions.map((question) => {
-					console.log(question.title);
-					return <h1 key={question._id}>{question.title}</h1>;
+					return <QuestionCard key={question._id} question={question} />;
 				})}
 			</div>
 		</>
