@@ -14,6 +14,15 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
+import { forwardRef, useRef } from "react"
+import { type MDXEditorMethods, type MDXEditorProps} from '@mdxeditor/editor'
+import dynamic from "next/dynamic";
+
+const Editor = dynamic(() => import('@/components/editor'), {
+  // Make sure we turn SSR off
+  ssr: false
+})
+
 const QuestionForm = () => {
 	const form = useForm({
 		resolver: zodResolver(AskQuestionSchema),
@@ -24,6 +33,7 @@ const QuestionForm = () => {
 		},
 	});
 	const handleCreateQuestion = () => {};
+  const editorRef = useRef<MDXEditorMethods>(null)
 	return (
 		<Form {...form}>
 			<form
@@ -63,7 +73,9 @@ const QuestionForm = () => {
 									<span className="text-primary-500">*</span>
 								</p>
 							</FormLabel>
-							<FormControl>Editor</FormControl>
+							<FormControl>
+                <Editor value={field.value} editorRef={editorRef} fieldChange={field.onChange}/>
+              </FormControl>
 							<FormDescription className="body-regular mt-2.5 text-light-500">
 								Introduce the problem and expand on what you've put in the
 								title.
