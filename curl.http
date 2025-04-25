@@ -21,3 +21,21 @@ PUT http://localhost:3000/api/tickets/2
 
 DELETE http://localhost:3000/api/tickets/2
 
+###
+GET http://localhost:3000/api/users
+
+###
+POST http://localhost:3000/api/users
+
+{
+  "name": "LOL",
+  "username": "tayto",
+  "email": "tayto@gmail.com"
+}
+
+###
+POST http://localhost:3000/api/users/email
+
+{
+  "email": "tayto@gmail.com"
+}

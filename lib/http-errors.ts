@@ -1,4 +1,5 @@
 interface ErrorRecordField extends Record<string, string[]> { }
+
 export class RequestError extends Error {
   statusCode: number;
   errors?: ErrorRecordField;
