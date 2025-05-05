@@ -104,7 +104,7 @@ export const AccountSchema = z.object({
 
 export const SignInWithOAuthSchema = z.object({
   provider: z.enum(["google", "github"]),
-  providerAccount: z
+  providerAccountId: z
     .string()
     .min(1, { message: "Provider Account ID is required." }),
   user: z.object({

@@ -14,6 +14,8 @@ export async function POST(request: Request) {
   await dbConnect();
 
   const session = await mongoose.startSession();
+  session.startTransaction();
+  console.log("startTransaction");
 
   try {
     const validatedData = SignInWithOAuthSchema.safeParse({
@@ -21,23 +23,34 @@ export async function POST(request: Request) {
       providerAccountId,
       user,
     });
+    console.log("Check route....");
+    console.log(validatedData);
+    console.log(user);
+    console.log("==========");
 
     if (!validatedData.success) {
       throw new ValidationError(validatedData.error.flatten().fieldErrors);
     }
     const { name, username, email, image } = user;
+    console.log("Name: ",name)
     const slugifiedUsername = slugify(username, {
       lower: true,
       strict: true,
       trim: true,
     });
+    console.log("Slugified name: ", slugifiedUsername)
+    console.log("email: ", email)
     let existingUser = await User.findOne({ email }).session(session);
+    const testabit = await User.findOne({ email }).session(session);
+    console.log("existingUser: ", testabit);
     if (!existingUser) {
       [existingUser] = await User.create(
         [{ name, username: slugifiedUsername, email, image }],
         { session },
       );
+      console.log("Creating user")
     } else {
+      console.log("modify user's info: ")
       const updatedData: { name?: string; image?: string } = {};
 
       if (existingUser.name !== name) updatedData.name = name;
@@ -56,6 +69,7 @@ export async function POST(request: Request) {
       provider,
       providerAccountId,
     }).session(session);
+    console.log("UderIdabcd: ", existingAccount);
     if (!existingAccount) {
       await Account.create(
         [
@@ -70,8 +84,11 @@ export async function POST(request: Request) {
         { session },
       );
     }
+    console.log("Go here so what is fucking happen");
     await session.commitTransaction();
 
+    console.log("Go here so what is fucking happen again");
+    await session.commitTransaction();
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
     return handleError(error, "api") as APIErrorResponse;
