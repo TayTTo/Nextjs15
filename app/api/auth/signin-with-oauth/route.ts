@@ -14,6 +14,7 @@ export async function POST(request: Request) {
   await dbConnect();
 
   const session = await mongoose.startSession();
+  session.startTransaction()
 
   try {
     const validatedData = SignInWithOAuthSchema.safeParse({
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
       strict: true,
       trim: true,
     });
-    let existingUser = await User.findOne({ email }).session(session);
+    let existingUser = await User.findOne({ email });
     if (!existingUser) {
       [existingUser] = await User.create(
         [{ name, username: slugifiedUsername, email, image }],
@@ -55,7 +56,7 @@ export async function POST(request: Request) {
       userId: existingUser._id,
       provider,
       providerAccountId,
-    }).session(session);
+    });
     if (!existingAccount) {
       await Account.create(
         [
@@ -74,6 +75,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
+    console.log(error)
     return handleError(error, "api") as APIErrorResponse;
   } finally {
     session.endSession();

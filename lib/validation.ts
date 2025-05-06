@@ -70,7 +70,7 @@ export const UserSchema = z.object({
   bio: z.string().optional(),
   image: z.string().url({ message: "Please provide a valid URL" }).optional(),
   location: z.string().optional(),
-  portfoli: z
+  portfolio: z
     .string()
     .url({ message: "Please provide a valid URL." })
     .optional(),
@@ -104,7 +104,7 @@ export const AccountSchema = z.object({
 
 export const SignInWithOAuthSchema = z.object({
   provider: z.enum(["google", "github"]),
-  providerAccount: z
+  providerAccountId: z
     .string()
     .min(1, { message: "Provider Account ID is required." }),
   user: z.object({
