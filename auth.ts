@@ -4,9 +4,37 @@ import Google from "next-auth/providers/google";
 import { ActionResponse } from "./types/global";
 import { api } from "./lib/api";
 import { IAccountDoc } from "./database/account.model";
+import { SignInWithOAuthSchema } from "./lib/validation";
+import { IUserDoc } from "./database/user.model";
+import bcrypt from "bcryptjs";
+import Credentials from "next-auth/providers/credentials"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [GitHub, Google],
+  providers: [GitHub, Google, Credentials({
+    async authorize(credentials) {
+      const validatedFields = SignInWithOAuthSchema.safeParse(credentials);
+
+      if (validatedFields.success) {
+        const { email, password } = validatedFields.data;
+
+        const { data: existingAccount } = (await api.accounts.getByProvider(email)) as ActionResponse<IAccountDoc>;
+        if(!existingAccount) return null;
+
+        const { data: existingUser } = ( await api.users.getById(existingAccount.userId.toString())) as ActionResponse<IUserDoc>
+                                  
+        if(!existingUser) return null;
+        const isValidPassword = await bcrypt.compare(password, existingUser.password!);
+        if(isValidPassword) {
+          return {
+            id: existingUser.id,
+            name: existingUser.name,
+            email: existingUser.email,
+            image: existingUser.image,
+          }
+        }
+      }
+    }
+  })],
   debug: true,
   callbacks: {
     async session({ session, token }) {
@@ -21,10 +49,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               ? token.email!
               : account.providerAccountId,
           )) as ActionResponse<IAccountDoc>;
-          if (!success || !existingAccount) return token;
-          const userId = existingAccount.userId;
+        if (!success || !existingAccount) return token;
+        const userId = existingAccount.userId;
 
-          if(userId) token.sub = userId.toString();
+        if (userId) token.sub = userId.toString();
       }
       return token;
     },

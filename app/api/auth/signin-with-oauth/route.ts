@@ -48,7 +48,7 @@ export async function POST(request: Request) {
         await User.updateOne(
           { _id: existingUser._id },
           { $set: updatedData },
-        ).session(session);
+        );
       }
     }
 
@@ -68,7 +68,6 @@ export async function POST(request: Request) {
             providerAccountId,
           },
         ],
-        { session },
       );
     }
     await session.commitTransaction();
