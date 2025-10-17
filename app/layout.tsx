@@ -48,6 +48,8 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
 						enableSystem
 						disableTransitionOnChange
 					>
+            <h1>This is gotesk</h1>
+            <h1 className="font-space-grotesk">This is gotesk</h1>
 						{children}
 					</ThemeProvider>
 					<Toaster />
